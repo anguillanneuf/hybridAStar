@@ -14,6 +14,7 @@ int NUM_THETA_CELLS = 90;
 double SPEED = 1.45;
 double LENGTH = 0.5;
 
+// how is this an integer matrix?
 vector<vector<int> > MAZE = {
         {_, X, X, _, _, _, _, _, _, _, X, X, _, _, _, _,},
         {_, X, X, _, _, _, _, _, _, X, X, _, _, _, _, _,},
@@ -54,6 +55,17 @@ int main() {
     }
 
     HBF hbf = HBF();
+
+    cout << "Check my heuristic function. " << endl;
+    vector<vector<int> > heuristic = hbf.heuristic_function(GRID, START, GOAL);
+
+    for (int i = 0; i < heuristic.size(); i++) {
+        cout << heuristic[i][0];
+        for (int j = 1; j < heuristic[0].size(); j++) {
+            cout << "," << heuristic[i][j];
+        }
+        cout << endl;
+    }
 
     HBF::maze_path get_path = hbf.search(GRID, START, GOAL);
 

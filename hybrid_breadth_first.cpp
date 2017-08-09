@@ -126,9 +126,13 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
     int total_closed = 1;
     vector<maze_s> opened = {state};
     bool finished = false;
+
+    // add my heuristic function
+    vector<vector<int> > heuristic = heuristic_function(grid, start, goal);
+
     while (!opened.empty()) {
 
-        maze_s next = opened[0]; //grab first elment
+        maze_s next = opened[0]; //grab first element
         opened.erase(opened.begin()); //pop first element
 
         int x = next.x;
@@ -183,5 +187,81 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
     path.came_from = came_from;
     path.final = state;
     return path;
+
+}
+
+vector<vector<int> > HBF::heuristic_function(vector<vector<int> > grid, vector<double> start, vector<int> goal){
+    /*
+    Create the heuristic function for a given grid, start position and goal position.
+    */
+
+    vector<vector<int> > heuristic = grid;
+    vector<vector<int> > closed = grid;
+
+    // give obstacles a very large value
+    for (int i = 0; i < heuristic.size(); i ++){
+        for (int j = 0; j < heuristic[0].size(); j ++){
+            if (heuristic[i][j] == 1){
+                heuristic[i][j] = 999;
+            }
+        }
+    }
+
+    vector<vector<int>> opened = {{int(start[0]),int(start[1])}};
+
+    heuristic[int(start[0])][int(start[1])] = 1;
+
+    while (!opened.empty() ) {
+
+        vector<int> next = opened[0]; //grab first element
+        opened.erase(opened.begin()); //pop first element
+
+        int x = next[0];
+        int y = next[1];
+
+        if (x == goal[0] && y == goal[1]) {
+            break;
+        }
+
+        vector<vector<int>> next_state;
+        next_state.push_back({x-1,y});
+        next_state.push_back({x,y+1});
+        next_state.push_back({x+1,y});
+        next_state.push_back({x,y-1});
+
+        int g = heuristic[x][y];
+
+        for (int i = 0; i < next_state.size(); i++) {
+
+            int x2 = next_state[i][0];
+            int y2 = next_state[i][1];
+            int temp = 0;
+
+            if ((x2 < 0 || x2 >= grid.size()) || (y2 < 0 || y2 >= grid[0].size())) {
+                //invalid cell
+                continue;
+            }
+
+            if (heuristic[idx(x2)][idx(y2)] == 0 & closed[x2][y2] == 0) {
+                temp += 1;
+                opened.push_back(next_state[i]);
+                heuristic[idx(x2)][idx(y2)] = g + max(temp, 1);
+                closed[x2][y2] = 1;
+            }
+
+        }
+
+    }
+
+    // any remaining unreached cell takes on 999
+    for (int i = 0; i < heuristic.size(); i ++){
+        for (int j = 0; j < heuristic[0].size(); j ++){
+            if (heuristic[i][j] == 0){
+                heuristic[i][j] = 999;
+            }
+        }
+    }
+
+    return heuristic;
 
 }
