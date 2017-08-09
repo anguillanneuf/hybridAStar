@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/tz/Documents/carnd/hybridAStar/hybrid_breadth_first.cpp
+iostream
+-
+sstream
+-
+fstream
+-
+math.h
+-
+vector
+-
+hybrid_breadth_first.h
+/Users/tz/Documents/carnd/hybridAStar/hybrid_breadth_first.h
+
+/Users/tz/Documents/carnd/hybridAStar/hybrid_breadth_first.h
+iostream
+-
+sstream
+-
+fstream
+-
+math.h
+-
+vector
+-
+
+/Users/tz/Documents/carnd/hybridAStar/main.cpp
+iostream
+-
+fstream
+-
+math.h
+-
+vector
+-
+hybrid_breadth_first.h
+/Users/tz/Documents/carnd/hybridAStar/hybrid_breadth_first.h
+
