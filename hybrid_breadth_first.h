@@ -22,7 +22,7 @@ public:
 
     struct maze_s {
 
-        int g;    // iteration
+        double g;    // iteration
         double x;
         double y;
         double theta;
@@ -62,6 +62,13 @@ public:
     vector<vector<int>> heuristic_basic(vector<vector<int>> grid, vector<double> start, vector<int> goal);
     vector<vector<double>> heuristic_nhh_euclidean(vector<vector<int>> grid, vector<int> goal);
     vector<vector<double>> heuristic_nhh_manhattan(vector<vector<int>> grid, vector<int> goal);
+};
+
+class comparator {
+public:
+    bool operator() (HBF::maze_s a, HBF::maze_s b) {
+        return a.g < b.g;
+    }
 };
 
 

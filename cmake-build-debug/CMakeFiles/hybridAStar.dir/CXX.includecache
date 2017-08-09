@@ -17,6 +17,8 @@ math.h
 -
 vector
 -
+algorithm
+-
 hybrid_breadth_first.h
 /Users/tz/Documents/carnd/hybridAStar/hybrid_breadth_first.h
 
@@ -43,4 +45,6 @@ vector
 -
 hybrid_breadth_first.h
 /Users/tz/Documents/carnd/hybridAStar/hybrid_breadth_first.h
+algorithm
+-
 

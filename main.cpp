@@ -3,6 +3,7 @@
 #include <math.h>
 #include <vector>
 #include "hybrid_breadth_first.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -40,22 +41,22 @@ vector<vector<int> > GRID = MAZE;
 vector<double> START = {0.0, 0.0, 0.0};
 vector<int> GOAL = {(int) GRID.size() - 1, (int) GRID[0].size() - 1};
 
-//vector<vector<int>> makeBlankGrid(int size) {
-//    vector<vector<int>> grid;
-//    vector<int> row;
-//    for (int cols = 0; cols < size; cols++) {
-//        row.clear();
-//        for (int rows = 0; rows < size; rows++) {
-//            row.push_back(0);
-//        }
-//        grid.push_back(row);
-//    }
-//    return grid;
-//}
+vector<vector<int>> makeBlankGrid(int size) {
+    vector<vector<int>> grid;
+    vector<int> row;
+    for (int cols = 0; cols < size; cols++) {
+        row.clear();
+        for (int rows = 0; rows < size; rows++) {
+            row.push_back(0);
+        }
+        grid.push_back(row);
+    }
+    return grid;
+}
 
 int main() {
 
-//    vector< vector<int> > GRID = makeBlankGrid(16);
+    vector< vector<int> > GRID = makeBlankGrid(16);
 
     cout << "Finding path through grid:" << endl;
 
@@ -71,29 +72,30 @@ int main() {
 
     HBF hbf = HBF();
 
-    cout << "Check my heuristic function. " << endl;
-
 //    vector<vector<double> > heuristic = hbf.heuristic_basic(GRID, START, GOAL);
-    vector<vector<double> > heuristic = hbf.heuristic_nhh_euclidean(GRID, GOAL);
+//    vector<vector<double> > heuristic = hbf.heuristic_nhh_euclidean(GRID, GOAL);
 //    vector<vector<double> > heuristic = hbf.heuristic_nhh_manhattan(GRID, GOAL);
 
+/*    cout << "Check my heuristic function. " << endl;
     for (int i = 0; i < heuristic.size(); i++) {
         cout << heuristic[i][0];
         for (int j = 1; j < heuristic[0].size(); j++) {
             cout << "," << heuristic[i][j];
         }
         cout << endl;
-    }
+    }*/
 
     HBF::maze_path get_path = hbf.search(GRID, START, GOAL);
 
     vector<HBF::maze_s> show_path = hbf.reconstruct_path(get_path.came_from, START, get_path.final);
 
+    cout << "steps: " <<show_path.size() << endl;
     cout << "show path from start to finish" << endl;
     for (int i = show_path.size() - 1; i >= 0; i--) {
 
         HBF::maze_s step = show_path[i];
-        cout << "##### step " << step.g << " #####" << endl;
+        cout << "##### step " << show_path.size()-i << " #####" << endl;
+        cout << "g " << step.g << endl;
         cout << "x " << step.x << endl;
         cout << "y " << step.y << endl;
         cout << "theta " << step.theta << endl;

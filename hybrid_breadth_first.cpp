@@ -7,6 +7,7 @@
 #include <fstream>
 #include <math.h>
 #include <vector>
+#include <algorithm>
 #include "hybrid_breadth_first.h"
 
 using namespace std;
@@ -98,6 +99,8 @@ HBF::reconstruct_path(vector<vector<vector<HBF::maze_s> > > came_from, vector<do
 
 }
 
+
+
 HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vector<int> goal) {
     /*
     Working Implementation of breadth first search. Does NOT use a heuristic
@@ -113,7 +116,7 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
                                                vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
     double theta = start[2];
     int stack = theta_to_stack_number(theta);
-    int g = 0;
+    double g = 0;
 
     maze_s state;
     state.g = g;
@@ -128,11 +131,19 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
     bool finished = false;
 
     // add my heuristic function
-    vector<vector<double> > heuristic = heuristic_nhh_euclidean(grid, goal);
+    // If you have one h value per cell then multiple states in that cell will have the same g+h value,
+    // making it difficult to determine which is the better state.
+
+//    vector<vector<int> > heuristic = heuristic_basic(grid, start, goal);
+//    vector<vector<double> > heuristic = heuristic_nhh_euclidean(grid, goal);
 //    vector<vector<double> > heuristic = heuristic_nhh_manhattan(grid, goal);
 
 
     while (!opened.empty()) {
+
+        int length = opened.size();
+        sort(opened.begin(), opened.end(), comparator());
+
 
         maze_s next = opened[0]; //grab first element
         opened.erase(opened.begin()); //pop first element
@@ -151,10 +162,12 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
         }
         vector<maze_s> next_state = expand(next);
 
-        double minValue = 999;
-
         for (int i = 0; i < next_state.size(); i++) {
-            int g2 = next_state[i].g + heuristic[x][y];
+            double h;
+//            h = heuristic[x][y];
+            h = sqrt(pow(abs(x-goal[0]),2)+pow(abs(y-goal[1]),2)+pow(theta_to_stack_number(next.theta)/15,2));
+//            h = 0;
+            double g2 = next_state[i].g + h;
             double x2 = next_state[i].x;
             double y2 = next_state[i].y;
             double theta2 = next_state[i].theta;
@@ -179,8 +192,6 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
                 closed_value[stack2][idx(x2)][idx(y2)] = 1;
                 came_from[stack2][idx(x2)][idx(y2)] = next;
                 total_closed += 1;
-                if (g2 < minValue)
-                    minValue = g2;
             }
 
 
@@ -275,7 +286,7 @@ vector<vector<int> > HBF::heuristic_basic(vector<vector<int> > grid, vector<doub
 vector<vector<double> > HBF::heuristic_nhh_euclidean(vector<vector<int> > grid, vector<int> goal){
     /*
     Create the heuristic function for non-holonomic heuristic, which does not consider obstacles.
-    A simple implementation.
+    A simple implementation that doesn't consider different trajectories at different points in cell.
     */
 
     vector<vector<double> > heuristic(grid.size(), vector<double>(grid[0].size(), 0));
@@ -294,7 +305,7 @@ vector<vector<double> > HBF::heuristic_nhh_euclidean(vector<vector<int> > grid, 
 vector<vector<double> > HBF::heuristic_nhh_manhattan(vector<vector<int> > grid, vector<int> goal){
     /*
     Create the heuristic function for non-holonomic heuristic, which does not consider obstacles.
-    A simple implementation.
+    A simple implementation that doesn't consider different trajectories at different points in cell.
     */
 
     vector<vector<double> > heuristic(grid.size(), vector<double>(grid[0].size(), 0));
