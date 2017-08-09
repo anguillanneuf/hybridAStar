@@ -59,7 +59,9 @@ public:
     vector<maze_s>
     reconstruct_path(vector<vector<vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
 
-    vector<vector<int>> heuristic_function(vector<vector<int>> grid, vector<double> start, vector<int> goal);
+    vector<vector<int>> heuristic_basic(vector<vector<int>> grid, vector<double> start, vector<int> goal);
+    vector<vector<double>> heuristic_nhh_euclidean(vector<vector<int>> grid, vector<int> goal);
+    vector<vector<double>> heuristic_nhh_manhattan(vector<vector<int>> grid, vector<int> goal);
 };
 
 

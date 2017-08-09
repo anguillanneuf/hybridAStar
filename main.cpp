@@ -40,7 +40,22 @@ vector<vector<int> > GRID = MAZE;
 vector<double> START = {0.0, 0.0, 0.0};
 vector<int> GOAL = {(int) GRID.size() - 1, (int) GRID[0].size() - 1};
 
+//vector<vector<int>> makeBlankGrid(int size) {
+//    vector<vector<int>> grid;
+//    vector<int> row;
+//    for (int cols = 0; cols < size; cols++) {
+//        row.clear();
+//        for (int rows = 0; rows < size; rows++) {
+//            row.push_back(0);
+//        }
+//        grid.push_back(row);
+//    }
+//    return grid;
+//}
+
 int main() {
+
+//    vector< vector<int> > GRID = makeBlankGrid(16);
 
     cout << "Finding path through grid:" << endl;
 
@@ -57,7 +72,10 @@ int main() {
     HBF hbf = HBF();
 
     cout << "Check my heuristic function. " << endl;
-    vector<vector<int> > heuristic = hbf.heuristic_function(GRID, START, GOAL);
+
+//    vector<vector<double> > heuristic = hbf.heuristic_basic(GRID, START, GOAL);
+    vector<vector<double> > heuristic = hbf.heuristic_nhh_euclidean(GRID, GOAL);
+//    vector<vector<double> > heuristic = hbf.heuristic_nhh_manhattan(GRID, GOAL);
 
     for (int i = 0; i < heuristic.size(); i++) {
         cout << heuristic[i][0];

@@ -128,7 +128,9 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
     bool finished = false;
 
     // add my heuristic function
-    vector<vector<int> > heuristic = heuristic_function(grid, start, goal);
+    vector<vector<double> > heuristic = heuristic_nhh_euclidean(grid, goal);
+//    vector<vector<double> > heuristic = heuristic_nhh_manhattan(grid, goal);
+
 
     while (!opened.empty()) {
 
@@ -149,8 +151,10 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
         }
         vector<maze_s> next_state = expand(next);
 
+        double minValue = 999;
+
         for (int i = 0; i < next_state.size(); i++) {
-            int g2 = next_state[i].g;
+            int g2 = next_state[i].g + heuristic[x][y];
             double x2 = next_state[i].x;
             double y2 = next_state[i].y;
             double theta2 = next_state[i].theta;
@@ -175,6 +179,8 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
                 closed_value[stack2][idx(x2)][idx(y2)] = 1;
                 came_from[stack2][idx(x2)][idx(y2)] = next;
                 total_closed += 1;
+                if (g2 < minValue)
+                    minValue = g2;
             }
 
 
@@ -190,9 +196,9 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start, vect
 
 }
 
-vector<vector<int> > HBF::heuristic_function(vector<vector<int> > grid, vector<double> start, vector<int> goal){
+vector<vector<int> > HBF::heuristic_basic(vector<vector<int> > grid, vector<double> start, vector<int> goal){
     /*
-    Create the heuristic function for a given grid, start position and goal position.
+    Create the heuristic function for A star searches on a grid, given start position and goal position.
     */
 
     vector<vector<int> > heuristic = grid;
@@ -259,6 +265,44 @@ vector<vector<int> > HBF::heuristic_function(vector<vector<int> > grid, vector<d
             if (heuristic[i][j] == 0){
                 heuristic[i][j] = 999;
             }
+        }
+    }
+
+    return heuristic;
+
+}
+
+vector<vector<double> > HBF::heuristic_nhh_euclidean(vector<vector<int> > grid, vector<int> goal){
+    /*
+    Create the heuristic function for non-holonomic heuristic, which does not consider obstacles.
+    A simple implementation.
+    */
+
+    vector<vector<double> > heuristic(grid.size(), vector<double>(grid[0].size(), 0));
+
+    // give obstacles a very large value
+    for (int i = 0; i < grid.size(); i ++){
+        for (int j = 0; j < grid[0].size(); j ++){
+            heuristic[i][j] = sqrt(pow(abs(i-goal[1]),2)+pow(abs(j-goal[0]),2));
+        }
+    }
+
+    return heuristic;
+
+}
+
+vector<vector<double> > HBF::heuristic_nhh_manhattan(vector<vector<int> > grid, vector<int> goal){
+    /*
+    Create the heuristic function for non-holonomic heuristic, which does not consider obstacles.
+    A simple implementation.
+    */
+
+    vector<vector<double> > heuristic(grid.size(), vector<double>(grid[0].size(), 0));
+
+    // give obstacles a very large value
+    for (int i = 0; i < grid.size(); i ++){
+        for (int j = 0; j < grid[0].size(); j ++){
+            heuristic[i][j] = abs(i-goal[1])+abs(j-goal[0]);
         }
     }
 
